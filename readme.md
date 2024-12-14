@@ -20,8 +20,8 @@ The database includes the following functionality:
 ## 🛠️ Tech Stack
 - **Database System:** MySQL (or other SQL-based systems)
 - **Tools Used:** 
-  - Database Design: [Tool Name] (e.g., MySQL Workbench, dbdiagram.io)
-  - SQL Editor: [Tool Name] (e.g., pgAdmin, MySQL CLI)
+  - Database Design:  Miro.com
+  - SQL Editor:  MySQL
 
 ## 📝 Project Details
 ### 1. ERD Design
@@ -51,9 +51,9 @@ Random sample data was added to test the functionality of the database and valid
 - `tests/`: Contains test cases for validating queries and database functionality.
 
 ## 📊 ERD Example
-![ERD Diagram Example](path/to/your-erd-image.png)
+![ERD Diagram Example](path/to/erd-image.png)
 
 ## 📜 How to Use
 1. Clone this repository:
    ```bash
-   git clone https://github.com/your-username/bank-system-db.git
+   git clone https://github.com/MostafaKadry/bank-db.git
