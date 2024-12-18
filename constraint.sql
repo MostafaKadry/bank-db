@@ -1,85 +1,95 @@
-use bankSysDb; 
-alter table Employee
-add constraint super foreign key(super_id)  references Employee(id),
-constraint emp_gender check( gender in( 'f','m' ));
+ USE bankSysDb;
 
--------------------------------------------------------------------------------
-alter table emp_working_depart
-add constraint empforw foreign key(emp_id)  references Employee(id),
-constraint deptforw foreign key(dept_id)  references department(id),
-constraint compwork primary key(emp_id,dept_id);
+-- Employee Table
+ALTER TABLE Employee
+ADD CONSTRAINT FK_Supervisor FOREIGN KEY (Super_ID) REFERENCES Employee(Emp_ID),
+    CONSTRAINT CHK_Employee_Gender CHECK (Gender IN ('f', 'm'));
 
--------------------------------------------------------------------------------
-alter table department
-add constraint mang_dept foreign key(manger_id)  references Employee(id);
+-- Emp_Working_Department Table
+ALTER TABLE Emp_Working_Department
+ADD CONSTRAINT FK_Emp_Working FOREIGN KEY (Emp_ID) REFERENCES Employee(Emp_ID),
+    CONSTRAINT FK_Dept_Working FOREIGN KEY (Dept_ID) REFERENCES Department(Dept_ID),
+    CONSTRAINT PK_Emp_Working PRIMARY KEY (Emp_ID, Dept_ID);
 
--------------------------------------------------------------------------------
-alter table equipment
-add constraint equp_dept foreign key(depart_id)  references department(id);
+-- Department Table
+ALTER TABLE Department
+ADD CONSTRAINT FK_Manager FOREIGN KEY (Manager_ID) REFERENCES Employee(Emp_ID);
 
--------------------------------------------------------------------------------
-alter table out_source_servise
-add constraint out_servive1 foreign key(department_ID)  references department(id),
-constraint out_servive foreign key(outsurce_ID)  references out_source_agency(id),
-constraint treasuryid foreign key(treasury_id)  references bank_treasury(id);
--------------------------------------------------------------------------------
- alter table loan
-add constraint loan_bank foreign key(treasury_id)  references bank_treasury(id);
+-- Equipment Table
+ALTER TABLE Equipment
+ADD CONSTRAINT FK_Equipment_Department FOREIGN KEY (Dept_ID) REFERENCES Department(Dept_ID);
 
+-- Agency_Service_Department Table
+ALTER TABLE Agency_Service_Department
+ADD CONSTRAINT FK_Outsource_Department FOREIGN KEY (Dept_ID) REFERENCES Department(Dept_ID),
+    CONSTRAINT FK_Outsource_Agency FOREIGN KEY (Agency_ID) REFERENCES Outsource_Agency(Agency_ID),
+    CONSTRAINT FK_Outsource_Treasury FOREIGN KEY (Treasurey_ID) REFERENCES Bank_Treasury(Treasury_ID);
 
------------------------------------------ssss--------------------------------------
-alter table installment
-add constraint loankey foreign key(loan_id)  references loan(id),
-constraint install_id primary key(loan_id,customer_id, payment_date),
-constraint custkey foreign key(customer_id)  references customer(id);
+-- Loan Table
+ALTER TABLE Loan
+ADD CONSTRAINT FK_Loan_Treasury FOREIGN KEY (Treasury_ID) REFERENCES Bank_Treasury(Treasury_ID);
 
--------------------------------------------------------------------------------
-alter table takeLoan
-add constraint loankeytake foreign key(loan_id)  references loan(id),
-constraint custkeytake foreign key(customer_id)  references customer(id),
-constraint take_loan primary key(loan_id,customer_id);
--------------------------------------------------------------------------------
-alter table customer
-add constraint cust_gender check( gender in( 'f','m' ));
+-- Installment Table
+ALTER TABLE Installment
+ADD CONSTRAINT FK_Installment_Loan FOREIGN KEY (Loan_ID) REFERENCES Loan(Loan_ID),
+    CONSTRAINT FK_Installment_Customer FOREIGN KEY (Customer_ID) REFERENCES Customer(Customer_ID),
+    CONSTRAINT PK_Installment PRIMARY KEY (Loan_ID, Customer_ID, Payment_Date);
 
--------------------------------------------------------------------------------
- alter table cust_phone
-add constraint custphonekey foreign key(customer_id)  references customer(id);
--------------------------------------------------------------------------------
- alter table dependant
- add constraint depend_id foreign key(emp_id)  references employee(id);
--------------------------------------------------------------------------------
-alter table emp_phone
-add constraint empphonekey foreign key(emp_id)  references employee(id);
--------------------------------------------------------------------------------
-alter table customer_adderss
-add constraint custaddress foreign key(cust_id)  references customer(id),
-constraint zcode foreign key (zip_code) references zip_codes(zip_code);
--------------------------------------------------------------------------------
+-- Take_Loan Table
+ALTER TABLE Take_Loan
+ADD CONSTRAINT FK_TakeLoan_Loan FOREIGN KEY (Loan_ID) REFERENCES Loan(Loan_ID),
+    CONSTRAINT FK_TakeLoan_Customer FOREIGN KEY (Customer_ID) REFERENCES Customer(Customer_ID),
+    CONSTRAINT PK_TakeLoan PRIMARY KEY (Loan_ID, Customer_ID);
 
--------------------------------------------------------------------------------
-alter table transMoneyTransaction
-add constraint toacc foreign key(to_account_id)  references account(id),
-constraint fromacc foreign key(from_account_id)  references account(id),
-constraint atm_id foreign key(trans_by)  references ATM(id);
-----------------------------------------------------------------------------------
- alter table withdraw_and_deposite
-add constraint acc foreign key(account_id)  references account(id),
-constraint f_atm_id foreign key(action_by)  references ATM(id),
-constraint wdteasury foreign key(treasury_id)  references bank_treasury(id);
--------------------------------------------------------------------------------
- alter table account
-add constraint custac_id foreign key(cust_id)  references customer(id),
-constraint account_type check( acc_type in( 'gold','silver','platinum' ));
+-- Customer Table
+ALTER TABLE Customer
+ADD CONSTRAINT CHK_Customer_Gender CHECK (Gender IN ('f', 'm'));
 
--------------------------------------------------------------------------------
- alter table refull_atm
-add constraint cust_id foreign key(outsource_id)  references out_source_agency(id);
+-- Customer_Phone Table
+ALTER TABLE Customer_Phone
+ADD CONSTRAINT FK_Customer_Phone FOREIGN KEY (Customer_ID) REFERENCES Customer(Customer_ID);
 
--------------------------------------------------------------------------------
- alter table car
-add constraint owcar check( owner_type in( 'employee','customer' ));
-----------------------------------------------------------------------------------------
- alter table parking_time
-add constraint carid foreign key(car_id)  references car(car_id),
-constraint areaid foreign key(area_id)  references parking(area);
+-- Dependent Table
+ALTER TABLE Dependents
+ADD CONSTRAINT FK_Dependent_Employee FOREIGN KEY (Emp_ID) REFERENCES Employee(Emp_ID);
+
+-- Employee_Phone Table
+ALTER TABLE Employee_Phone
+ADD CONSTRAINT FK_Employee_Phone FOREIGN KEY (Emp_ID) REFERENCES Employee(Emp_ID);
+
+-- Customer_Address Table
+ALTER TABLE Customer_Address
+ADD CONSTRAINT FK_Customer_Address FOREIGN KEY (Customer_ID) REFERENCES Customer(Customer_ID),
+    CONSTRAINT FK_Address_Zip FOREIGN KEY (Zip_Code) REFERENCES Zip_Codes(Zip_Code);
+
+-- Money_Transaction Table
+ALTER TABLE Money_Transaction
+ADD CONSTRAINT FK_Transaction_ToAccount FOREIGN KEY (To_Account_ID) REFERENCES Account(Account_ID),
+    CONSTRAINT FK_Transaction_FromAccount FOREIGN KEY (From_Account_ID) REFERENCES Account(Account_ID),
+    CONSTRAINT FK_Transaction_ByATM FOREIGN KEY (Transaction_By) REFERENCES ATM(ATM_ID);
+
+-- Withdraw_And_Deposit Table
+ALTER TABLE Withdraw_And_Deposit
+ADD CONSTRAINT FK_WD_Account FOREIGN KEY (Account_ID) REFERENCES Account(Account_ID),
+    CONSTRAINT FK_WD_ByATM FOREIGN KEY (Action_By) REFERENCES ATM(ATM_ID),
+    CONSTRAINT CHK_WD_Type CHECK (WD_Type IN ('withdraw', 'deposit')),
+    CONSTRAINT FK_WD_Treasury FOREIGN KEY (Treasury_ID) REFERENCES Bank_Treasury(Treasury_ID);
+
+-- Account Table
+ALTER TABLE Account
+ADD CONSTRAINT FK_Account_Customer FOREIGN KEY (Customer_ID) REFERENCES Customer(Customer_ID),
+    CONSTRAINT CHK_Account_Type CHECK (Account_Type IN ('gold', 'silver', 'platinum'));
+
+--Refill_ATM Table
+ALTER TABLE Refill_ATM
+ADD CONSTRAINT FK_Refill_ATM_Outsource FOREIGN KEY (Outsource_ID) REFERENCES Outsource_Agency(Agency_ID),
+    CONSTRAINT FK_Refill_ATM FOREIGN KEY (ATM_ID) REFERENCES ATM(ATM_ID);
+
+--Car Table
+ALTER TABLE Car
+ADD CONSTRAINT CHK_Car_OwnerType CHECK (Owner_Type IN ('employee', 'customer'));
+
+--Parking_Time Table
+ALTER TABLE Parking_Time
+ADD CONSTRAINT FK_ParkingTime_Car FOREIGN KEY (Car_ID) REFERENCES Car(Car_ID),
+    CONSTRAINT FK_ParkingTime_Area FOREIGN KEY (Area_ID) REFERENCES Parking(Area_ID);
